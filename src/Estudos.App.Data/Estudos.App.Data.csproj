@@ -7,7 +7,16 @@
   <ItemGroup>
     <Folder Include="Context\" />
     <Folder Include="Repository\" />
-    <Folder Include="Mappings\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Estudos.App.Business\Estudos.App.Business.csproj" />
   </ItemGroup>
 
 </Project>
