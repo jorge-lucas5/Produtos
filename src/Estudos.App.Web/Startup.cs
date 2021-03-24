@@ -35,6 +35,10 @@ namespace Estudos.App.Web
 
             services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAutoMapper(typeof(Startup));
+
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
