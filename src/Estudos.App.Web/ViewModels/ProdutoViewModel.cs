@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 
 namespace Estudos.App.Web.ViewModels
@@ -9,6 +11,9 @@ namespace Estudos.App.Web.ViewModels
     {
         [Key]
         public Guid Id { get; set; }
+        [DisplayName("Fornecedor")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public Guid FornecedorId { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(200, MinimumLength = 5, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
@@ -19,6 +24,8 @@ namespace Estudos.App.Web.ViewModels
         [StringLength(1000, MinimumLength = 5, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
         public string Descricao { get; set; }
         public string Imagem { get; set; }
+
+        [NotMapped]
         public IFormFile ImagemUpload { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
@@ -32,5 +39,6 @@ namespace Estudos.App.Web.ViewModels
 
         /* EF Relation */
         public FornecedorViewModel Fornecedor { get; set; }
+        public IEnumerable<FornecedorViewModel> Fornecedores { get; set; }
     }
 }
