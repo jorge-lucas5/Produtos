@@ -13,6 +13,7 @@ namespace Estudos.App.Business.Interfaces
         Task<List<TEntity>> ObterTodos();
         Task Atualizar(TEntity entity);
         Task Remover(Guid id);
+        Task<bool> Existe(Guid id);
         Task<IEnumerable<TEntity>> Buscar(Expression<Func<TEntity,bool>> expression);
         Task<int> SaveChanges();
     }

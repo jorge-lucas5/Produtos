@@ -21,6 +21,11 @@ namespace Estudos.App.Data.Repository
             DbSet = Context.Set<TEntity>();
         }
 
+        public async Task<bool> Existe(Guid id)
+        {
+            return await DbSet.AnyAsync(a => a.Id == id);
+        }
+
         public async Task<IEnumerable<TEntity>> Buscar(Expression<Func<TEntity, bool>> expression)
         {
             return await DbSet.AsNoTracking().Where(expression).ToListAsync();
