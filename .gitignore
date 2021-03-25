@@ -499,3 +499,4 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,aspnetcore,dotnetcore
 src/Estudos.App.Web/wwwroot/lib/
+src/Estudos.App.Web/wwwroot/uploadImagens/
