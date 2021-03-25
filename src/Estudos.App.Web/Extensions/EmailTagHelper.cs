@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace DevIO.App.Extensions
+namespace Estudos.App.Web.Extensions
 {
     public class EmailTagHelper : TagHelper
     {
