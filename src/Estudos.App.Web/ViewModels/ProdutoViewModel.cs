@@ -26,6 +26,8 @@ namespace Estudos.App.Web.ViewModels
         public string Imagem { get; set; }
 
         [NotMapped]
+        [DisplayName("Imagem do Produto")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public IFormFile ImagemUpload { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]

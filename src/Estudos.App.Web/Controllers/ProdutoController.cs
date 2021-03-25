@@ -6,6 +6,7 @@ using Estudos.App.Business.Interfaces;
 using Estudos.App.Business.Models;
 using Microsoft.AspNetCore.Mvc;
 using Estudos.App.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Estudos.App.Web.Controllers
 {
@@ -44,6 +45,7 @@ namespace Estudos.App.Web.Controllers
         public async Task<IActionResult> Create()
         {
             var produtoViewModel = await PopularFornecedores(new ProdutoViewModel());
+            ViewBag.FornecedorId = new SelectList(produtoViewModel.Fornecedores,"Id","Nome");
             return View(produtoViewModel);
         }
 
@@ -79,6 +81,8 @@ namespace Estudos.App.Web.Controllers
         public async Task<IActionResult> Edit(Guid id, ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id) return NotFound();
+
+            ModelState.Remove(nameof(produtoViewModel.ImagemUpload));
 
             if (!ModelState.IsValid) return View(produtoViewModel);
 
