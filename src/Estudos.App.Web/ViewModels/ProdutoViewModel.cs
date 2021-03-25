@@ -10,6 +10,10 @@ namespace Estudos.App.Web.ViewModels
 {
     public class ProdutoViewModel
     {
+        public ProdutoViewModel()
+        {
+            DataCadastro = DateTime.Now;
+        }
         [Key]
         public Guid Id { get; set; }
         [DisplayName("Fornecedor")]

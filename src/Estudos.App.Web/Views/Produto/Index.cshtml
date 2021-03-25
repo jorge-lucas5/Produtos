@@ -9,54 +9,7 @@
 <p>
     <a class="btn btn-primary" asp-action="Create">Novo Produto</a>
 </p>
-<table class="table table-bordered table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Imagem)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fornecedor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Valor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ativo)
-            </th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td> <img src="~/uploadImagens/@item.Imagem" alt="imagem" style="width: 70px; height: 100px" /></td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fornecedor.Documento)
-                </td>
-                <td>
-                    @item.Valor.ToString("C")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ativo)
-                </td>
-
-                <td class="text-right">
-                    <a class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="Detalhes" asp-action="Details" asp-route-id="@item.Id"><span class="fa fa-search"></span></a>
-                    <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Editar" asp-action="Edit" asp-route-id="@item.Id"><span class="fa fa-edit"></span></a>
-                    <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Excluir" asp-action="Delete" asp-route-id="@item.Id"><span class="fa fa-trash"></span></a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<partial name="_ListaProdutos"/>
 
 @section Scripts
 {

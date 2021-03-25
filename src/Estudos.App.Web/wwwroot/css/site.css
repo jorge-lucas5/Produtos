@@ -76,3 +76,8 @@ file,
 textarea {
     max-width: 400px
 }
+
+.data-table,
+.nosort {
+    visibility: inherit
+}

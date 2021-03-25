@@ -19,7 +19,7 @@ namespace Estudos.App.Web.Extensions
             {
                 return new ValidationResult("Moeda em formato inválido");
             }
-            return base.IsValid(value, validationContext);
+            return ValidationResult.Success;
         }
     }
 

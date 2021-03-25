@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Estudos.App.Web.ViewModels.FornecedorViewModel>
+﻿@using Estudos.App.Web.Extensions
+@model IEnumerable<Estudos.App.Web.ViewModels.FornecedorViewModel>
 
 @{
     ViewData["Title"] = "Lista de Fornecedores";
@@ -9,7 +10,7 @@
 <p>
     <a class="btn btn-primary" asp-action="Create">Novo Fornecedor</a>
 </p>
-<table class="table table-bordered table-hover table-striped">
+<table class="table data-table table-bordered table-hover table-striped">
     <thead class="thead-dark">
         <tr>
             <th style="width: 50%">
@@ -21,7 +22,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Ativo)
             </th>
-            <th style="width: 20%">Ações</th>
+            <th class="nosort" style="width: 20%">Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -32,7 +33,7 @@
                     @Html.DisplayFor(modelItem => item.Nome)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Documento)
+                    @this.FormataDocumento(item.TipoFornecedor, item.Documento)
                 </td>
                 <td>
                     <badge-boolean ativo="item.Ativo"></badge-boolean>
