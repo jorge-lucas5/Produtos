@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -68,7 +69,7 @@ namespace Estudos.App.Web.Controllers
                 ViewBag.FornecedorId = new SelectList(produtoViewModel.Fornecedores, "Id", "Nome");
                 return View(produtoViewModel);
             }
-            
+
             var produto = _mapper.Map<Produto>(produtoViewModel);
             produto.Imagem = caminho;
             await _produtoRepository.Adicionar(produto);
@@ -94,11 +95,29 @@ namespace Estudos.App.Web.Controllers
         {
             if (id != produtoViewModel.Id) return NotFound();
 
-            ModelState.Remove(nameof(produtoViewModel.ImagemUpload));
-
+            var produtoAtualizacao = await _produtoRepository.ObterPorId(id);
+            produtoViewModel.Imagem = produtoAtualizacao.Imagem;
+            var teste = nameof(produtoViewModel.ImagemUpload);
+            ModelState.Remove(teste);
             if (!ModelState.IsValid) return View(produtoViewModel);
 
-            var produto = _mapper.Map<Produto>(produtoViewModel);
+            if (produtoViewModel.ImagemUpload != null)
+            {
+                var caminho = await FileHelper.UploadArquivo(produtoViewModel.ImagemUpload, _configuration);
+                if (string.IsNullOrEmpty(caminho))
+                {
+                    ModelState.AddModelError(string.Empty, "Erro ao realizar upload da imagem");
+                    return View(produtoViewModel);
+                }
+                produtoAtualizacao.Imagem = caminho;
+            }
+
+            produtoAtualizacao.Ativo = produtoViewModel.Ativo;
+            produtoAtualizacao.Descricao = produtoViewModel.Descricao;
+            produtoAtualizacao.Valor = produtoViewModel.Valor;
+            produtoAtualizacao.Nome = produtoViewModel.Nome;
+
+            var produto = _mapper.Map<Produto>(produtoAtualizacao);
             await _produtoRepository.Atualizar(produto);
             return RedirectToAction(nameof(Index));
         }
@@ -133,6 +152,7 @@ namespace Estudos.App.Web.Controllers
             var produto = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObeterProdutoFornecedor(id));
             produto.Fornecedores =
                 _mapper.Map<IEnumerable<FornecedorViewModel>>(await _fornecedorRepository.ObterTodos());
+           
             return produto;
         }
 

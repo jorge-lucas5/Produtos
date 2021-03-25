@@ -15,7 +15,7 @@ namespace Estudos.App.Web.Util
 
             if (arquivo.Length <= 0) return null;
 
-            var uploadFilePath = configuration.GetValue("UploadFilePath", "wwwroot/uploadImagens");
+            var uploadFilePath = GetUploadFilePath(configuration);
             imgPrefixo += arquivo.FileName;
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), uploadFilePath, imgPrefixo);
@@ -35,6 +35,16 @@ namespace Estudos.App.Web.Util
         public static string GerarPrefixo()
         {
             return Guid.NewGuid() + "_";
+        }
+
+        public static string GetUploadFilePath(IConfiguration configuration)
+        {
+           return configuration.GetValue("UploadFilePath", "wwwroot/uploadImagens");
+        }
+        public static string GetRelativeFilePath(IConfiguration configuration)
+        {
+            return configuration.GetValue<string>("RelativeUploadFilePath");
+           
         }
     }
 }
