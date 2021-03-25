@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Estudos.App.Web.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Estudos.App.Web.ViewModels
@@ -31,6 +32,7 @@ namespace Estudos.App.Web.ViewModels
         public IFormFile ImagemUpload { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [Moeda]
         public decimal Valor { get; set; }
 
         [ScaffoldColumn(false)]
