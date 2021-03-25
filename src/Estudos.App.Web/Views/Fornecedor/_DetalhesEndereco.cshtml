@@ -59,8 +59,14 @@
                     @Html.DisplayFor(model => model.Endereco.Estado)
                 </td>
                 <td>
-                    <a supress-by-action="Edit,ObterEndereco" asp-action="AtualizarEndereco" asp-route-id="@Model.Id" class="btn btn-info" data-modal="">
+                    @*<a supress-by-action="Edit,ObterEndereco" asp-action="AtualizarEndereco" asp-route-id="@Model.Id" class="btn btn-info" data-modal="">
                         <span title="Editar" class="fa fa-pencil-alt"></span>
+                    </a>*@
+                    
+                    <a class="btn btn-info btn-sm" data-modal=""
+                       data-toggle="tooltip" data-placement="top" title="Editar" 
+                       asp-action="AtualizarEndereco" asp-controller="Fornecedor" asp-route-id="@Model.Id">
+                        <span class="fa fa-edit"></span>
                     </a>
                 </td>
             </tr>
@@ -70,6 +76,6 @@
 </div>
 
 <script>
-    SetModal();
+    AjaxModal();
 </script>
 
