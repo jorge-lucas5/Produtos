@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Estudos.App.Business.Interfaces;
@@ -10,12 +7,12 @@ using Estudos.App.Business.Models;
 using Estudos.App.Web.Util;
 using Microsoft.AspNetCore.Mvc;
 using Estudos.App.Web.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 
 namespace Estudos.App.Web.Controllers
 {
+    [Route("produto")]
     public class ProdutoController : BaseController
     {
         private readonly IProdutoRepository _produtoRepository;
@@ -33,6 +30,7 @@ namespace Estudos.App.Web.Controllers
 
         #region Actions
 
+        [Route("lista-de-produtos")]
         public async Task<IActionResult> Index()
         {
             var consulta = await _produtoRepository.ObeterProdutosFornecedores();
@@ -40,6 +38,7 @@ namespace Estudos.App.Web.Controllers
             return View(lista);
         }
 
+        [Route("detalhes-do-produto/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
 
@@ -50,14 +49,15 @@ namespace Estudos.App.Web.Controllers
             return View(produtoViewModel);
         }
 
+        [Route("novo-produto")]
         public async Task<IActionResult> Create()
         {
             var produtoViewModel = await PopularFornecedores(new ProdutoViewModel());
             ViewBag.FornecedorId = new SelectList(produtoViewModel.Fornecedores, "Id", "Nome");
             return View(produtoViewModel);
         }
-
-
+        
+        [Route("novo-produto")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProdutoViewModel produtoViewModel)
@@ -77,8 +77,7 @@ namespace Estudos.App.Web.Controllers
 
         }
 
-
-
+        [Route("editar-produto/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var produtoViewModel = await ObterProduto(id);
@@ -88,7 +87,7 @@ namespace Estudos.App.Web.Controllers
             return View(produtoViewModel);
         }
 
-
+        [Route("editar-produto/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, ProdutoViewModel produtoViewModel)
@@ -122,6 +121,7 @@ namespace Estudos.App.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Route("excluir-produto/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
 
@@ -132,7 +132,7 @@ namespace Estudos.App.Web.Controllers
             return View(produtoViewModel);
         }
 
-
+        [Route("excluir-produto/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

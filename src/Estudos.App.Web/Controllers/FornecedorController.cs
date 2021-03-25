@@ -9,6 +9,7 @@ using Estudos.App.Web.ViewModels;
 
 namespace Estudos.App.Web.Controllers
 {
+    [Route("fornecedor")]
     public class FornecedorController : BaseController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
@@ -24,6 +25,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         #region Actions
+        [Route("lista-de-fornecedores")]
         public async Task<IActionResult> Index()
         {
             var consulta = await _fornecedorRepository.ObterTodos();
@@ -31,6 +33,7 @@ namespace Estudos.App.Web.Controllers
             return View(lista);
         }
 
+        [Route("detalhes-do-fornecedor/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
 
@@ -41,7 +44,8 @@ namespace Estudos.App.Web.Controllers
 
             return View(fornecedorViewModel);
         }
-
+        
+        [Route("novo-fornecedor")]
         public IActionResult Create()
         {
             return View();
@@ -49,6 +53,7 @@ namespace Estudos.App.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("novo-fornecedor")]
         public async Task<IActionResult> Create(FornecedorViewModel fornecedorViewModel)
         {
             if (!ModelState.IsValid) return View(fornecedorViewModel);
@@ -59,6 +64,7 @@ namespace Estudos.App.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Route("editar-fornecedor/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var fornecedorViewModel = await ObeterFornecedorProdutosEndereco(id);
@@ -70,6 +76,7 @@ namespace Estudos.App.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("editar-fornecedor/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, FornecedorViewModel fornecedorViewModel)
         {
             if (id != fornecedorViewModel.Id) return NotFound();
@@ -82,6 +89,7 @@ namespace Estudos.App.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Route("exluir-fornecedor/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
 
@@ -91,6 +99,7 @@ namespace Estudos.App.Web.Controllers
             return View(fornecedorViewModel);
         }
 
+        [Route("exluir-fornecedor/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
@@ -103,7 +112,7 @@ namespace Estudos.App.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        [Route("atualizar-fornecedor/{id:guid}")]
         public async Task<IActionResult> AtualizarEndereco(Guid id)
         {
             var fornecedor = await ObterFornecedorEndereco(id);
@@ -111,6 +120,8 @@ namespace Estudos.App.Web.Controllers
 
             return PartialView("_AtualizarEndereco", new FornecedorViewModel { Endereco = fornecedor.Endereco });
         }
+
+        [Route("atualizar-fornecedor/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AtualizarEndereco(FornecedorViewModel fornecedorViewModel)
@@ -129,6 +140,7 @@ namespace Estudos.App.Web.Controllers
 
         }
 
+        [Route("obter-endereco-fornecedor/{id:guid}")]
         public async Task<IActionResult> ObterEndereco(Guid id)
         {
             var fornecedor = await ObterFornecedorEndereco(id);
