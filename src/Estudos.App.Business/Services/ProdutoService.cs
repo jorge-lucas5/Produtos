@@ -10,7 +10,7 @@ namespace Estudos.App.Business.Services
     {
         private readonly IProdutoRepository _produtoRepository;
 
-        public ProdutoService(IProdutoRepository produtoRepository)
+        public ProdutoService(IProdutoRepository produtoRepository,INotificador notificador) : base(notificador)
         {
             _produtoRepository = produtoRepository;
         }

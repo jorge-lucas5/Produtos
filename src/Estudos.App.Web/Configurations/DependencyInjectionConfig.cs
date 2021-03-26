@@ -1,4 +1,6 @@
 ﻿using Estudos.App.Business.Interfaces;
+using Estudos.App.Business.Notificacoes;
+using Estudos.App.Business.Services;
 using Estudos.App.Data.Context;
 using Estudos.App.Data.Repository;
 using Estudos.App.Web.Extensions;
@@ -16,6 +18,10 @@ namespace Estudos.App.Web.Configurations
             services.AddScoped<IFornecedorRepository, FornecedorRepository>();
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
             services.AddSingleton<IValidationAttributeAdapterProvider, MoedaValidationAttributeAdapterProvider>();
+
+            services.AddScoped<INotificador, Notificador>();
+            services.AddScoped<IFornecedorService, FornecedorService>();
+            services.AddScoped<IProdutoService, ProdutoService>();
             return services;
         }
     }
