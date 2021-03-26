@@ -13,15 +13,16 @@ namespace Estudos.App.Web.Controllers
     public class FornecedorController : BaseController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
-        private readonly IEnderecoRepository _enderecoRepository;
+        private readonly IFornecedorService _fornecedorService;
         private readonly IMapper _mapper;
 
         public FornecedorController(IFornecedorRepository fornecedorRepository,
-            IMapper mapper, IEnderecoRepository enderecoRepository)
+            IMapper mapper, IFornecedorService fornecedorService,INotificador notificador
+        ) : base(notificador)
         {
             _fornecedorRepository = fornecedorRepository;
             _mapper = mapper;
-            _enderecoRepository = enderecoRepository;
+            _fornecedorService = fornecedorService;
         }
 
         #region Actions
@@ -59,8 +60,11 @@ namespace Estudos.App.Web.Controllers
             if (!ModelState.IsValid) return View(fornecedorViewModel);
 
             var fornecedor = _mapper.Map<Fornecedor>(fornecedorViewModel);
-            await _fornecedorRepository.Adicionar(fornecedor);
+            await _fornecedorService.Adicionar(fornecedor);
 
+            if (!OperacaoValida()) return View(fornecedorViewModel);
+
+            NotificacaoSucesso("Fonecedor cadastrado com sucesso");
             return RedirectToAction(nameof(Index));
         }
 
@@ -84,8 +88,11 @@ namespace Estudos.App.Web.Controllers
             if (!ModelState.IsValid) return View(fornecedorViewModel);
 
             var fornecedor = _mapper.Map<Fornecedor>(fornecedorViewModel);
-            await _fornecedorRepository.Atualizar(fornecedor);
+            await _fornecedorService.Atualizar(fornecedor);
 
+            if (!OperacaoValida()) return View(fornecedorViewModel);
+
+            NotificacaoSucesso("Fonecedor editado com sucesso");
             return RedirectToAction(nameof(Index));
         }
 
@@ -107,8 +114,11 @@ namespace Estudos.App.Web.Controllers
             var existe = await _fornecedorRepository.Existe(id);
             if (!existe) return NotFound();
 
-            await _fornecedorRepository.Remover(id);
+            await _fornecedorService.Remover(id);
 
+            if (!OperacaoValida()) return RedirectToAction("Delete", id);
+
+            NotificacaoSucesso("Fonecedor excluído com sucesso");
             return RedirectToAction(nameof(Index));
         }
 
@@ -132,7 +142,7 @@ namespace Estudos.App.Web.Controllers
                 return PartialView("_AtualizarEndereco", fornecedorViewModel);
 
             var endereco = _mapper.Map<Endereco>(fornecedorViewModel.Endereco);
-            await _enderecoRepository.Atualizar(endereco);
+            await _fornecedorService.AtualizarEndereco(endereco);
 
             var url = Url.Action("ObterEndereco", "Fornecedor", new { id = endereco.FornecedorId });
 

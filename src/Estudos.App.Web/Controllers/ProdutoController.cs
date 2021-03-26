@@ -16,16 +16,23 @@ namespace Estudos.App.Web.Controllers
     public class ProdutoController : BaseController
     {
         private readonly IProdutoRepository _produtoRepository;
+        private readonly IProdutoService _produtoService;
         private readonly IFornecedorRepository _fornecedorRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public ProdutoController(IProdutoRepository produtoRepository, IMapper mapper, IFornecedorRepository fornecedorRepository, IConfiguration configuration)
+        public ProdutoController(IProdutoRepository produtoRepository,
+                                IMapper mapper, IFornecedorRepository fornecedorRepository,
+                                IConfiguration configuration,
+                                IProdutoService produtoService,
+                                INotificador notificador
+                                ) : base(notificador)
         {
             _produtoRepository = produtoRepository;
             _mapper = mapper;
             _fornecedorRepository = fornecedorRepository;
             _configuration = configuration;
+            _produtoService = produtoService;
         }
 
         #region Actions
@@ -56,7 +63,7 @@ namespace Estudos.App.Web.Controllers
             ViewBag.FornecedorId = new SelectList(produtoViewModel.Fornecedores, "Id", "Nome");
             return View(produtoViewModel);
         }
-        
+
         [Route("novo-produto")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -72,7 +79,12 @@ namespace Estudos.App.Web.Controllers
 
             var produto = _mapper.Map<Produto>(produtoViewModel);
             produto.Imagem = caminho;
-            await _produtoRepository.Adicionar(produto);
+            await _produtoService.Adicionar(produto);
+
+            if (!OperacaoValida()) return View(produtoViewModel);
+
+            NotificacaoSucesso("produto cadastrado com sucesso");
+
             return RedirectToAction(nameof(Index));
 
         }
@@ -96,8 +108,7 @@ namespace Estudos.App.Web.Controllers
 
             var produtoAtualizacao = await _produtoRepository.ObterPorId(id);
             produtoViewModel.Imagem = produtoAtualizacao.Imagem;
-            var teste = nameof(produtoViewModel.ImagemUpload);
-            ModelState.Remove(teste);
+            ModelState.Remove(nameof(produtoViewModel.ImagemUpload));
             if (!ModelState.IsValid) return View(produtoViewModel);
 
             if (produtoViewModel.ImagemUpload != null)
@@ -117,7 +128,12 @@ namespace Estudos.App.Web.Controllers
             produtoAtualizacao.Nome = produtoViewModel.Nome;
 
             var produto = _mapper.Map<Produto>(produtoAtualizacao);
-            await _produtoRepository.Atualizar(produto);
+            await _produtoService.Atualizar(produto);
+
+            if (!OperacaoValida()) return View(produtoViewModel);
+
+            NotificacaoSucesso("produto ditado com sucesso");
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -140,7 +156,12 @@ namespace Estudos.App.Web.Controllers
             var existe = await _produtoRepository.Existe(id);
             if (!existe) return NotFound();
 
-            await _produtoRepository.Remover(id);
+            await _produtoService.Remover(id);
+
+            if (!OperacaoValida()) return RedirectToAction("Delete", id);
+
+            NotificacaoSucesso("produto excluído com sucesso");
+
             return RedirectToAction(nameof(Index));
         }
         #endregion
@@ -152,7 +173,7 @@ namespace Estudos.App.Web.Controllers
             var produto = _mapper.Map<ProdutoViewModel>(await _produtoRepository.ObeterProdutoFornecedor(id));
             produto.Fornecedores =
                 _mapper.Map<IEnumerable<FornecedorViewModel>>(await _fornecedorRepository.ObterTodos());
-           
+
             return produto;
         }
 
