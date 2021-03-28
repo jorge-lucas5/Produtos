@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using Estudos.App.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Estudos.App.Web.Models;
 
 namespace Estudos.App.Web.Controllers
 {
@@ -28,10 +24,24 @@ namespace Estudos.App.Web.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [Route("erro/{id}")]
+        public IActionResult Error(int id)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var erro = new ErrorViewModel();
+            if (id == 404)
+            {
+                erro.Mensagem = "A página que você está procurando não existe. <br/>" +
+                                "Em caso de dúvidas entre em contato com o suporte.";
+                erro.Titulo = "Ops! Página não encontrada";
+            }
+            else if (id == 403)
+            {
+                erro.Mensagem = "Você não tem permissão para fazer isso!";
+                erro.Titulo = "Acesso Negado";
+            }
+            erro.ErroCode = id;
+
+            return View(erro);
         }
     }
 }

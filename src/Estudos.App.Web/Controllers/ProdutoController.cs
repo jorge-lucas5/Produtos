@@ -4,15 +4,17 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Estudos.App.Business.Interfaces;
 using Estudos.App.Business.Models;
+using Estudos.App.Web.Extensions;
 using Estudos.App.Web.Util;
 using Microsoft.AspNetCore.Mvc;
 using Estudos.App.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 
 namespace Estudos.App.Web.Controllers
 {
-    [Route("produto")]
+    [Route("produto"), Authorize]
     public class ProdutoController : BaseController
     {
         private readonly IProdutoRepository _produtoRepository;
@@ -38,14 +40,17 @@ namespace Estudos.App.Web.Controllers
         #region Actions
 
         [Route("lista-de-produtos")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+
             var consulta = await _produtoRepository.ObeterProdutosFornecedores();
             var lista = _mapper.Map<IEnumerable<ProdutoViewModel>>(consulta);
             return View(lista);
         }
 
         [Route("detalhes-do-produto/{id:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid id)
         {
 
@@ -57,6 +62,8 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("novo-produto")]
+        //[ClaimsAuthorize("Produto", "Adicionar")]
+        [RoleAuthorize(new []{ "Admin" })]
         public async Task<IActionResult> Create()
         {
             var produtoViewModel = await PopularFornecedores(new ProdutoViewModel());
@@ -67,6 +74,7 @@ namespace Estudos.App.Web.Controllers
         [Route("novo-produto")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Produto", "Adicionar")]
         public async Task<IActionResult> Create(ProdutoViewModel produtoViewModel)
         {
             var caminho = await FileHelper.UploadArquivo(produtoViewModel.ImagemUpload, _configuration);
@@ -90,6 +98,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("editar-produto/{id:guid}")]
+        [ClaimsAuthorize("Produto", "Editar")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var produtoViewModel = await ObterProduto(id);
@@ -102,6 +111,8 @@ namespace Estudos.App.Web.Controllers
         [Route("editar-produto/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Produto", "Editar")]
+
         public async Task<IActionResult> Edit(Guid id, ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id) return NotFound();
@@ -138,6 +149,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("excluir-produto/{id:guid}")]
+        [ClaimsAuthorize("Produto", "Excluir")]
         public async Task<IActionResult> Delete(Guid id)
         {
 
@@ -151,6 +163,7 @@ namespace Estudos.App.Web.Controllers
         [Route("excluir-produto/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Produto", "Excluir")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var existe = await _produtoRepository.Existe(id);

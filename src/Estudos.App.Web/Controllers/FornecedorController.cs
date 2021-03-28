@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Estudos.App.Business.Interfaces;
 using Estudos.App.Business.Models;
+using Estudos.App.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Estudos.App.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Estudos.App.Web.Controllers
 {
-    [Route("fornecedor")]
+    [Route("fornecedor"), Authorize]
     public class FornecedorController : BaseController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
@@ -27,6 +29,7 @@ namespace Estudos.App.Web.Controllers
 
         #region Actions
         [Route("lista-de-fornecedores")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var consulta = await _fornecedorRepository.ObterTodos();
@@ -35,6 +38,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("detalhes-do-fornecedor/{id:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid id)
         {
 
@@ -47,6 +51,7 @@ namespace Estudos.App.Web.Controllers
         }
         
         [Route("novo-fornecedor")]
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         public IActionResult Create()
         {
             return View();
@@ -55,6 +60,7 @@ namespace Estudos.App.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("novo-fornecedor")]
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         public async Task<IActionResult> Create(FornecedorViewModel fornecedorViewModel)
         {
             if (!ModelState.IsValid) return View(fornecedorViewModel);
@@ -69,6 +75,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("editar-fornecedor/{id:guid}")]
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var fornecedorViewModel = await ObeterFornecedorProdutosEndereco(id);
@@ -81,6 +88,7 @@ namespace Estudos.App.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("editar-fornecedor/{id:guid}")]
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         public async Task<IActionResult> Edit(Guid id, FornecedorViewModel fornecedorViewModel)
         {
             if (id != fornecedorViewModel.Id) return NotFound();
@@ -97,6 +105,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("exluir-fornecedor/{id:guid}")]
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         public async Task<IActionResult> Delete(Guid id)
         {
 
@@ -109,6 +118,7 @@ namespace Estudos.App.Web.Controllers
         [Route("exluir-fornecedor/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var existe = await _fornecedorRepository.Existe(id);
@@ -123,6 +133,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("atualizar-fornecedor/{id:guid}")]
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         public async Task<IActionResult> AtualizarEndereco(Guid id)
         {
             var fornecedor = await ObterFornecedorEndereco(id);
@@ -134,6 +145,7 @@ namespace Estudos.App.Web.Controllers
         [Route("atualizar-fornecedor/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         public async Task<IActionResult> AtualizarEndereco(FornecedorViewModel fornecedorViewModel)
         {
             ModelState.Remove(nameof(fornecedorViewModel.Nome));
@@ -151,6 +163,7 @@ namespace Estudos.App.Web.Controllers
         }
 
         [Route("obter-endereco-fornecedor/{id:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> ObterEndereco(Guid id)
         {
             var fornecedor = await ObterFornecedorEndereco(id);
