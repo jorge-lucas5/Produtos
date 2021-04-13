@@ -1,5 +1,3 @@
-<h4 align="center"> 🚧 Em construção...  🚧 </h4>
-
 
 ## 💻 Sobre o projeto
 
