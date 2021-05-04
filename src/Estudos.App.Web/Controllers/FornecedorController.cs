@@ -19,8 +19,7 @@ namespace Estudos.App.Web.Controllers
         private readonly IMapper _mapper;
 
         public FornecedorController(IFornecedorRepository fornecedorRepository,
-            IMapper mapper, IFornecedorService fornecedorService,INotificador notificador
-        ) : base(notificador)
+            IMapper mapper, IFornecedorService fornecedorService, INotificador notificador) : base(notificador)
         {
             _fornecedorRepository = fornecedorRepository;
             _mapper = mapper;
@@ -49,7 +48,7 @@ namespace Estudos.App.Web.Controllers
 
             return View(fornecedorViewModel);
         }
-        
+
         [Route("novo-fornecedor")]
         [ClaimsAuthorize("Fornecedor", "Adicionar")]
         public IActionResult Create()
@@ -93,7 +92,12 @@ namespace Estudos.App.Web.Controllers
         {
             if (id != fornecedorViewModel.Id) return NotFound();
 
-            if (!ModelState.IsValid) return View(fornecedorViewModel);
+            var fonecedorDados = await ObeterFornecedorProdutosEndereco(fornecedorViewModel.Id);
+            fornecedorViewModel.Produtos = fonecedorDados.Produtos;
+            fornecedorViewModel.Endereco = fonecedorDados.Endereco;
+
+            if (!ModelState.IsValid)  return View(fornecedorViewModel);
+
 
             var fornecedor = _mapper.Map<Fornecedor>(fornecedorViewModel);
             await _fornecedorService.Atualizar(fornecedor);
@@ -183,6 +187,7 @@ namespace Estudos.App.Web.Controllers
         {
             return _mapper.Map<FornecedorViewModel>(await _fornecedorRepository.ObeterFornecedorProdutosEndereco(id));
         }
+
         #endregion
 
 
